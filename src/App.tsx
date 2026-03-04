@@ -39,15 +39,23 @@ function formatAmount(v: number): string {
   return `${v}万円`;
 }
 
-function getRiskLevel(ratio: number, safeRatio: number): RiskLevel {
+function getRiskLevel(ratio: number, children: number): RiskLevel {
+  const safeThresholds = [25, 23, 21, 20];
+  const warnThresholds = [30, 28, 26, 25];
+  
+  const childIndex = Math.min(children, 3);
+  const safeRatio = safeThresholds[childIndex];
+  const warnRatio = warnThresholds[childIndex];
+  
   if (ratio <= safeRatio) return "safe";
-  if (ratio <= safeRatio + 5) return "warn";
+  if (ratio <= warnRatio) return "warn";
   return "danger";
 }
 
 function getSafeRatio(children: number): number {
   if (children === 0) return 25;
-  if (children === 1) return 22;
+  if (children === 1) return 23;
+  if (children === 2) return 21;
   return 20;
 }
 
@@ -128,7 +136,7 @@ function FreeSimulator() {
     (calcMonthlyPayment(loan, rate + 1, years) -
       calcMonthlyPayment(loan, rate, years)) /
     10000;
-  const riskLevel = getRiskLevel(ratio, 25);
+  const riskLevel = getRiskLevel(ratio, 0);
 
   return (
     <div>
@@ -266,7 +274,7 @@ function PaidSimulator() {
     monthly: calcMonthlyPayment(loan, rate + i, years) / 10000 + otherLoan,
   }));
 
-  const overallLevel = getRiskLevel(ratioMain, safeRatio);
+  const overallLevel = getRiskLevel(ratioMain, children);
 
   const childrenLabel = children === 3 ? "3人以上" : `${children}人`;
 
@@ -406,16 +414,16 @@ function PaidSimulator() {
                 <p
                   className={cn(
                     "text-xl font-extrabold",
-                    getRiskLevel(ratioTotal, safeRatio) === "safe"
+                    getRiskLevel(ratioTotal, children) === "safe"
                       ? "text-emerald-600"
-                      : getRiskLevel(ratioTotal, safeRatio) === "warn"
+                      : getRiskLevel(ratioTotal, children) === "warn"
                       ? "text-yellow-600"
                       : "text-red-600"
                   )}
                 >
                   {ratioTotal.toFixed(1)}%
                 </p>
-                <RiskBadge level={getRiskLevel(ratioTotal, safeRatio)} />
+                <RiskBadge level={getRiskLevel(ratioTotal, children)} />
               </CardContent>
             </Card>
           )}
@@ -427,16 +435,16 @@ function PaidSimulator() {
               <p
                 className={cn(
                   "text-xl font-extrabold",
-                  getRiskLevel(ratioMain, safeRatio) === "safe"
+                  getRiskLevel(ratioMain, children) === "safe"
                     ? "text-emerald-600"
-                    : getRiskLevel(ratioMain, safeRatio) === "warn"
+                    : getRiskLevel(ratioMain, children) === "warn"
                     ? "text-yellow-600"
                     : "text-red-600"
                 )}
               >
                 {ratioMain.toFixed(1)}%
               </p>
-              <RiskBadge level={getRiskLevel(ratioMain, safeRatio)} />
+              <RiskBadge level={getRiskLevel(ratioMain, children)} />
             </CardContent>
           </Card>
         </div>
