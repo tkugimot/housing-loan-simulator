@@ -246,6 +246,7 @@ function PaidSimulator() {
   const [rate, setRate] = useState<number>(0.5);
   const [years, setYears] = useState<number>(35);
   const [children, setChildren] = useState<number>(0);
+  const [otherLoan, setOtherLoan] = useState<number>(0);
 
   const isPair = loanType === "pair";
   const safeRatio = getSafeRatio(children);
@@ -253,7 +254,8 @@ function PaidSimulator() {
   const totalIncome = isPair ? income1 + income2 : income1;
   const mainIncome = Math.max(income1, income2);
   const monthlyMan = calcMonthlyPayment(loan, rate, years) / 10000;
-  const annualRepay = monthlyMan * 12;
+  const monthlyTotal = monthlyMan + otherLoan;
+  const annualRepay = monthlyTotal * 12;
 
   const ratioTotal = (annualRepay / totalIncome) * 100;
   const ratioMain = (annualRepay / mainIncome) * 100;
@@ -261,7 +263,7 @@ function PaidSimulator() {
   const scenarios = [0, 1, 2, 3].map((i) => ({
     label: i === 0 ? "現在" : `+${i}%`,
     rate: rate + i,
-    monthly: calcMonthlyPayment(loan, rate + i, years) / 10000,
+    monthly: calcMonthlyPayment(loan, rate + i, years) / 10000 + otherLoan,
   }));
 
   const overallLevel = getRiskLevel(ratioMain, safeRatio);
@@ -379,6 +381,15 @@ function PaidSimulator() {
           step={5}
           onChange={setYears}
           format={(v) => `${v}年`}
+        />
+        <SliderField
+          label="他のローン月額"
+          value={otherLoan}
+          min={0}
+          max={50}
+          step={1}
+          onChange={setOtherLoan}
+          format={(v) => `${v}万円`}
         />
       </div>
 
