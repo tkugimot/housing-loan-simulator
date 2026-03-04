@@ -249,7 +249,6 @@ function PaidSimulator() {
 
   const isPair = loanType === "pair";
   const safeRatio = getSafeRatio(children);
-  const warnRatio = safeRatio + 5;
 
   const totalIncome = isPair ? income1 + income2 : income1;
   const mainIncome = Math.max(income1, income2);
