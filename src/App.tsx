@@ -1,4 +1,5 @@
 import { useState } from "react";
+import bcryptjs from "bcryptjs";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const PASSWORD = "note2024";
+const PASSWORD_HASH = "$2b$10$lH5Mv4wjZWCgZt5UCCzmHOEXpBNpT93qOpUfJMrMFZB5kZd2hK/CC";
 
 type RiskLevel = "safe" | "warn" | "danger";
 type LoanType = "single" | "pair";
@@ -532,8 +533,9 @@ export default function App() {
   const [error, setError] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"free" | "paid">("free");
 
-  const handleUnlock = () => {
-    if (password === PASSWORD) {
+  const handleUnlock = async () => {
+    const isMatch = await bcryptjs.compare(password, PASSWORD_HASH);
+    if (isMatch) {
       setUnlocked(true);
       setError(false);
       setActiveTab("paid");
@@ -591,7 +593,7 @@ export default function App() {
                   有料版
                 </p>
                 <p className="text-sm text-gray-500 mb-5 leading-relaxed">
-                  ペアローンvs単独ローンの比較、金利2〜3%上昇シナリオ、子供の数を加味した総合リスク診断が利用できます。
+                  ペアローンvs単独ローンの比較、金利2〜3%上昇シナリオ、子供の数、現在の負債を加味した総合リスク診断が利用できます。
                   <br />
                   noteの有料記事に掲載のパスワードを入力してください。
                 </p>
