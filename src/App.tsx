@@ -595,7 +595,7 @@ export default function App() {
                 <p className="text-sm text-gray-500 mb-5 leading-relaxed">
                   ペアローンvs単独ローンの比較、金利2〜3%上昇シナリオ、子供の数、現在の負債を加味した総合リスク診断が利用できます。
                   <br />
-                  noteの有料記事に掲載のパスワードを入力してください。
+                  <a href="https://note.com/tkugimot/n/n5d24db1ad0cf" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">noteの有料記事</a>に掲載のパスワードを入力してください。
                 </p>
                 <Input
                   type="password"
